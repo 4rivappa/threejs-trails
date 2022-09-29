@@ -1,0 +1,33 @@
+ body{
+    margin: 0;
+    overflow-x: hidden;
+    /* background: black; */
+    background-color: black;
+}
+#canvas { 
+    display: block;
+    position: absolute;
+    background-color: black;
+}
+#title{ 
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display:block; 
+}
+h1{ 
+    font-size: 30px;
+    font-style: verdana;
+    text-transform: uppercase;
+    color:#89c0c5;
+}
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+   user-select: none;
+}

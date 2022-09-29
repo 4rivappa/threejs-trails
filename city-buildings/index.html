@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three JS</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="noselect" id="title"></div>
+    <canvas id="canvas"></canvas>
+    <script src="three.js"></script>
+    <script type="module" src="GLTFLoader.js"></script>
+    <script type="module">
+        import {GLTFLoader} from "./GLTFLoader.js";
+        const canvas = document.getElementById("canvas");
+       
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera( 
+            75,
+            window.innerWidth/window.innerHeight,
+            0.01,
+            1000
+        );
+        var renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const mouse = { 
+            x : window.innerWidth/2,
+            y : window.innerHeight/2
+        };
+        const lastMouse = { 
+            x: window.innerWidth/2,
+            y: window.innerHeight/2
+        };
+        window.addEventListener("mousemove", function(mouseEvent){ 
+            mouse.x = mouseEvent.x;
+            mouse.y = mouseEvent.y;
+        });
+        window.addEventListener("resize", function(){ 
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        var loader = new GLTFLoader();
+        let obj = undefined;
+        loader.load("scene.gltf", function(gltf){
+            obj = gltf.scene;
+            obj.position.set(1.5, 0, 6);
+            scene.add(obj);
+
+            var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+            light.position.set(-10, 6, 12);
+            scene.add(light);
+            var light2 = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+            light2.position.set(1, -1, 8);
+            scene.add(light2);
+            camera.position.set(0, 0, 12);
+
+            
+            var currentFrameRender = flip;
+            requestAnimationFrame(currentFrameRender);
+            setTimeout(() => currentFrameRender = animate ,9000);
+            
+            let deepDive = 1;
+            function flip(){
+                if(obj.rotation.y <= 2.5 && obj.rotation.z <=1.5 && deepDive){ 
+                    obj.rotation.y += 0.013;
+                    obj.rotation.z += 0.012;
+                }else{ 
+                    if(camera.position.z > 1.8 && deepDive) { 
+                        camera.position.z -= 0.03;
+                    }else{ 
+                        obj.rotation.z = 0;
+                        obj.rotation.y = 0;
+                        camera.position.set(0.9, -1.2, 8);
+                        deepDive = 0;
+
+                        const titleText = document.getElementById('title');
+                        titleText.innerHTML = "<h1>34th St, New York, NY 10001, USA</h1>";
+                    }
+                }
+                renderer.render(scene, camera);
+                requestAnimationFrame(currentFrameRender);
+            }
+            function animate(){ 
+                let dx = lastMouse.x - mouse.x;
+                let dy = lastMouse.y - mouse.y;
+                
+                if(dx !== 0){ 
+                    obj.rotateY(dx/1300);
+                }
+                if(dy !== 0){ 
+                    obj.rotateX(dy/6000);
+                }
+                
+                lastMouse.x = mouse.x;
+                lastMouse.y = mouse.y;
+                renderer.render(scene, camera);
+                
+                requestAnimationFrame(currentFrameRender);
+            }
+        });
+    </script>
+</body>
+</html>

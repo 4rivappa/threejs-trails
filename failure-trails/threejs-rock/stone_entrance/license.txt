@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stone Entrance
+* source:	https://sketchfab.com/3d-models/stone-entrance-ea4a511423bd4a1dab2fe32665edd67e
+* author:	DJMaesen (https://sketchfab.com/bumstrum)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stone Entrance" (https://sketchfab.com/3d-models/stone-entrance-ea4a511423bd4a1dab2fe32665edd67e) by DJMaesen (https://sketchfab.com/bumstrum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

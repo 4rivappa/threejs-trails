@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three JS</title>
+    <style>
+        body{
+            margin: 0;
+            overflow-x: hidden;
+            background: black;
+        }
+        #canvas { 
+            display: block;
+            position: absolute;
+        }
+        /* #title{ 
+            height: 100vh;
+            display: grid;
+            place-items:center;
+            position: absolute;
+        } */
+        #title{ 
+            position: absolute;
+	        top: 10px;
+	        width: 100%;
+	        text-align: left;
+	        z-index: 100;
+	        display:block;
+        }
+        h1{ 
+            font-size: 30px;
+            font-style: verdana;
+            text-transform: uppercase;
+            color:#24a0ab;
+        }
+        section{ 
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="title"><h1></h1></div>
+    <canvas id="canvas"></canvas>
+    <section></section>
+
+    <script src="three.js"></script>
+    <script type="module" src="GLTFLoader.js"></script>
+    <script type="module" src="FBXLoader.js"></script>
+    <script type="module">
+        import {GLTFLoader} from "./GLTFLoader.js";
+        const canvas = document.getElementById("canvas");
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera( 
+            75,
+            window.innerWidth/window.innerHeight,
+            0.01,
+            1000
+        );
+        var renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // document.body.appendChild(renderer.domElement);
+
+
+        const mouse = { 
+            x : window.innerWidth/2,
+            y : window.innerHeight/2
+        };
+        const lastMouse = { 
+            x: window.innerWidth/2,
+            y: window.innerHeight/2
+        };
+        window.addEventListener("mousemove", function(mouseEvent){ 
+            mouse.x = mouseEvent.x;
+            mouse.y = mouseEvent.y;
+        });
+        window.addEventListener("resize", function(){ 
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+
+        var loader = new GLTFLoader();
+        let obj = undefined;
+        loader.load("scene.gltf", function(gltf){
+            obj = gltf.scene;
+            obj.position.set(1.5, 0, 6);
+            // obj.rotation.y += 0.02;
+            scene.add(obj);
+
+            var light = new THREE.HemisphereLight(0x24a0ab, 0x000000, 5);
+            light.position.set(-10, 6, 8);
+            scene.add(light);
+            var light2 = new THREE.HemisphereLight(0x24a0ab, 0x000000, 1);
+            light2.position.set(1.2, -10, 0);
+            scene.add(light2);
+            camera.position.set(1.2, 10, 30);
+
+            var currentFrameRender = flip;
+            requestAnimationFrame(currentFrameRender);
+            setTimeout(() => currentFrameRender = animate ,7600);
+            
+            let deepDive = 1;
+            function flip(){
+                if(obj.rotation.y <= 3.0){ 
+                    obj.rotation.y += 0.016;
+                    camera.position.z -= 0.015; 
+                }else{ 
+                    if(camera.position.z > 5.8 && deepDive){ 
+                        camera.position.z -= 0.09; 
+                    }else{ 
+                        camera.position.x = 24;
+                        camera.position.y = 6;
+                        camera.position.z = 30;
+                        obj.rotation.y += 0.04;
+                        deepDive = 0;
+                    }
+                }
+                renderer.render(scene, camera);
+                requestAnimationFrame(currentFrameRender);
+            }
+            function animate(){ 
+                let dx = lastMouse.x - mouse.x;
+                let dy = lastMouse.y - mouse.y;
+                
+                if(dx !== 0){ 
+                     obj.rotateY(dx/1500);
+                }
+                if(dy !== 0){ 
+                    obj.rotateX(dy/15000);
+                }
+                
+                lastMouse.x = mouse.x;
+                lastMouse.y = mouse.y;
+                renderer.render(scene, camera);
+                requestAnimationFrame(currentFrameRender);
+            }
+
+        });
+    </script>
+</body>
+</html>
